@@ -3,13 +3,13 @@ import StepInformation from "../../components/steps/StepInformation";
 import StepLoading from "../../components/steps/StepLoading";
 import { useForm, FormProvider } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { useRegisterMutation } from "../../backend/features/auth/authAPI";
+import { useRegisterEtablisMutation } from "../../backend/features/auth/authAPI";
 
 export default function Register() {
   const methods = useForm({ mode: "onTouched" });
   const { handleSubmit } = methods;
 
-  const [registerUser] = useRegisterMutation();
+  const [registerUser] = useRegisterEtablisMutation();
 
   const [photoPreview, setPhotoPreview] = useState(null);
   const [showLoading, setShowLoading] = useState(false);
@@ -30,14 +30,13 @@ export default function Register() {
     try {
       // Préparer les données du formulaire
       const formData = new FormData();
-      formData.append("prenom", data.prenom);
-      formData.append("nom", data.nom);
-      formData.append("nom_tablissement", data.companyName);
+      formData.append("nom_etablissement", data.nom_etablissement);
+      formData.append("departement", data.departement);
       formData.append("email", data.email);
       formData.append("phone", data.phone);
 
       if (data.photo && data.photo[0]) {
-        formData.append("photo", data.photo[0]);
+        formData.append("logo", data.photo[0]);
       }
 
       // envoi API
@@ -54,7 +53,7 @@ export default function Register() {
 
     setShowLoading(false);
     alert("Inscription terminée ✅");
-    navigate("/dashboardLocaux");
+    navigate("/dashboardEtablissement");
   };
 
   return (

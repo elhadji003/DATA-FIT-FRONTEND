@@ -3,7 +3,7 @@ import { logout, setCredentials } from "../auth/authSlice";
 import { AUTH_API } from "../../enpoint";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: import.meta.env.VITE_BACKEND_API_PRODUCTION,
+  baseUrl: import.meta.env.VITE_BACKEND_API,
   prepareHeaders: (headers, { getState }) => {
     const token = getState().auth.accessToken;
     if (token) headers.set("Authorization", `Bearer ${token}`);

@@ -20,6 +20,13 @@ export const authApi = createApi({
                 body: formData,
             }),
         }),
+        registerEtablis: builder.mutation({
+            query: (formData) => ({
+                url: `${AUTH_API}register/etablissement/`,
+                method: "POST",
+                body: formData,
+        }),
+        }),
         logout: builder.mutation({
             query: () => ({
                 url: `${AUTH_API}logout/`,
@@ -73,6 +80,7 @@ export const authApi = createApi({
 export const {
     useLoginMutation,
     useRegisterMutation,
+    useRegisterEtablisMutation,
     useLogoutMutation,
     useChangePasswordMutation,
     useForgotPasswordMutation,

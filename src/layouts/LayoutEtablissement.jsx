@@ -1,12 +1,12 @@
 import React from "react";
-import NavbarUser from "../components/users/NavbarUser";
+import NavbarEtablissement from "../components/users/NavbarEtablissement";
 import { Outlet } from "react-router-dom";
 import Header from "../components/global/Header";
 
-export default function LayoutUser() {
+export default function LayoutEtablissement() {
   return (
     <div>
-      <NavbarUser />
+      <NavbarEtablissement />
       <Header />
       <main className="px-4">
         <Outlet />

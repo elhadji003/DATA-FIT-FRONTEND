@@ -30,7 +30,7 @@ export default function Login() {
       // ici tu peux stocker le token si nécessaire
       // localStorage.setItem("token", res.access);
 
-      navigate("/dashboardLocaux"); // redirection après login
+      navigate("/dashboardEtablissement"); // redirection après login
     } catch (error) {
       console.error("Erreur de connexion ❌ :", error);
       alert("Email ou mot de passe incorrect.");

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import BtnLogout from "../auth/BtnLogout";
 import { Menu, X } from "lucide-react"; // icônes pour hamburger
 
-export default function NavbarUser() {
+export default function NavbarEtablissement() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -17,16 +17,16 @@ export default function NavbarUser() {
         {/* Menu desktop */}
         <div className="hidden md:flex items-center gap-2">
           <Link
-            to="dashboardLocaux"
+            to="dashboardEtablissement"
             className="px-4 py-2 rounded-md hover:bg-gray-800"
           >
             Dashboard
           </Link>
           <Link
-            to="administration"
+            to="crud/fileres/niveaux"
             className="px-4 py-2 rounded-md hover:bg-gray-800"
           >
-            Administration
+            Programmes
           </Link>
           <Link
             to="candidatures"
@@ -62,11 +62,11 @@ export default function NavbarUser() {
             Dashboard
           </Link>
           <Link
-            to="administration"
+            to="crud/fileres/niveaux"
             className="px-4 py-2 rounded-md hover:bg-gray-800"
             onClick={() => setIsOpen(false)}
           >
-            Administration
+            Programmes
           </Link>
           <Link
             to="candidatures"
