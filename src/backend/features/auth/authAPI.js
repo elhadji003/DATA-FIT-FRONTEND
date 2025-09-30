@@ -48,12 +48,13 @@ export const authApi = createApi({
             }),
         }),
         resetPassword: builder.mutation({   
-            query: (uid, token, new_password, re_new_password) => ({
-                url: `${AUTH_API}reset-password/`,
+            query: ({ uid, token, new_password, re_new_password }) => ({
+                url: `${AUTH_API}reset/password/confirm/${uid}/${token}/`,
                 method: "POST",
-                body: { uid, token, new_password, re_new_password },
+                body: { new_password, re_new_password },
             }),
         }),
+
         getUserProfile: builder.query({
             query: () => ({
                 url: `${AUTH_API}profile/`,

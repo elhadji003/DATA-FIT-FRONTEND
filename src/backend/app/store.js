@@ -16,6 +16,7 @@ import { userApi } from "../features/user/userAPI";
 import { etablisApi } from "../features/etablissement/etablisAPI";
 import { programmesApi } from "../features/programmes/programmesAPI";
 import { importsApi } from "../features/importsFichier/importsAPI";
+import { postulerApi } from "../features/postuler/postulerAPI";
 
 // Configuration de persistance
 const persistConfig = {
@@ -31,6 +32,7 @@ const rootReducer = combineReducers({
   [etablisApi.reducerPath]: etablisApi.reducer,
   [programmesApi.reducerPath]: programmesApi.reducer,
   [importsApi.reducerPath]: importsApi.reducer,
+  [postulerApi.reducerPath]: postulerApi.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -55,6 +57,7 @@ export const store = configureStore({
       etablisApi.middleware,
       programmesApi.middleware,
       importsApi.middleware,
+      postulerApi.middleware,
     ),
   devTools: process.env.NODE_ENV !== "production",
 });

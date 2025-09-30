@@ -4,6 +4,7 @@ import StepLoading from "../../components/steps/StepLoading";
 import { useForm, FormProvider } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { useRegisterEtablisMutation } from "../../backend/features/auth/authAPI";
+import toast from "react-hot-toast";
 
 export default function Register() {
   const methods = useForm({ mode: "onTouched" });
@@ -52,7 +53,7 @@ export default function Register() {
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
     setShowLoading(false);
-    alert("Inscription terminée ✅");
+    toast.success("Inscription terminée ✅");
     navigate("/dashboardEtablissement");
   };
 

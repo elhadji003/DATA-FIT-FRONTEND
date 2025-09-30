@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useLoginMutation } from "../../backend/features/auth/authAPI";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "../../backend/features/auth/authSlice";
+import toast from "react-hot-toast";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -19,21 +20,11 @@ export default function Login() {
 
     try {
       const res = await loginUser(crendentials).unwrap();
-
-      console.log("Response", res);
-      
-
       dispatch(setCredentials(res));
-
-      console.log("Utilisateur connecté ✅ :", res);
-
-      // ici tu peux stocker le token si nécessaire
-      // localStorage.setItem("token", res.access);
-
       navigate("/dashboardEtablissement"); // redirection après login
     } catch (error) {
       console.error("Erreur de connexion ❌ :", error);
-      alert("Email ou mot de passe incorrect.");
+      toast.error("Email ou mot de passe incorrect.");
     }
   };
 

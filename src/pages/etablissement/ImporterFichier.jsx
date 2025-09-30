@@ -22,9 +22,10 @@ export default function ImporterFichier() {
         type="file"
         accept=".csv,.xlsx"
         onChange={(e) => setFile(e.target.files[0])}
+        className="border border-gray-800 px-4 py-2 rounded-md me-4"
       />
-      <button onClick={handleUpload} disabled={uploading}>
-        {uploading ? "Chargement..." : "Upload"}
+      <button onClick={handleUpload} disabled={uploading} className="px-4 py-2 rounded-md bg-yellow-400 text-white uppercase">
+        {uploading ? "Chargement..." : "Télécharger"}
       </button>
 
       <ListeMesImports />

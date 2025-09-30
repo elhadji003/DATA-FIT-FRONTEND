@@ -1,45 +1,74 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
+import { useGetEtablisDetailQuery } from "../../backend/features/etablissement/etablisAPI";
+import Loader from "../../components/global/Loader";
+import { usePostulerMutation } from "../../backend/features/postuler/postulerAPI";
+import toast from "react-hot-toast";
 
 export default function FormPostule() {
-  const { id } = useParams(); // récupère l'id de l'établissement depuis l'URL
+  const { id } = useParams(); // id établissement
+  const { data, isLoading, isError } = useGetEtablisDetailQuery(id);
+
+  const [postuler, { isLoading: isSubmitting }] = usePostulerMutation();
+
   const [form, setForm] = useState({
     prenom: "",
     nom: "",
     email: "",
     telephone: "",
-    tuteurNom: "",
-    tuteurPrenom: "",
-    tuteurTelephone: "",
+    tuteur_nom: "",
+    tuteur_telephone: "",
+    tuteur_prenom: "",
     filiere: "",
     niveau: "",
     motivation: "",
   });
 
-  // gestion des inputs
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Données envoyées :", form);
-    alert("Votre candidature a été envoyée avec succès ✅");
+    try {
+      await postuler({ ...form, etablissement: id }).unwrap();
+      toast.success("Votre candidature a été envoyée ✅");
+      setForm({
+        prenom: "",
+        nom: "",
+        email: "",
+        telephone: "",
+        tuteur_prenom: "",
+        tuteur_nom: "",
+        tuteur_telephone: "",
+        filiere: "",
+        niveau: "",
+        motivation: "",
+      });
+    } catch (error) {
+      console.log("Erreur :", error);
+      toast.error("Une erreur est survenue ❌");
+    }
   };
+
+  if (isLoading) return <Loader />;
+  if (isError)
+    return (
+      <p className="text-center py-10 text-red-500">Erreur de chargement ❌</p>
+    );
+
+  const filieres = data?.filieres || [];
+  const niveaux = data?.niveaux || [];
 
   return (
     <div className="min-h-screen bg-gray-50 py-10 px-4">
-      {/* En-tête */}
       <div className="max-w-3xl mx-auto text-center mb-10">
         <h1 className="text-3xl font-bold text-[#2c3e50]">
-          Postuler à l’établissement #{id}
+          Postuler à l’établissement {data.nom_etablissement}
         </h1>
-        <p className="text-gray-600 mt-2">
-          Remplissez soigneusement ce formulaire pour soumettre votre candidature
-        </p>
+        <p className="text-gray-600 mt-2">Département : {data.departement}</p>
       </div>
 
-      {/* Formulaire */}
       <form
         onSubmit={handleSubmit}
         className="max-w-3xl mx-auto bg-white shadow-md rounded-xl p-8 space-y-6"
@@ -87,35 +116,45 @@ export default function FormPostule() {
           />
         </div>
 
-        {/* Infos Tuteur */}
+        {/* Infos tuteur */}
         <h2 className="text-xl font-semibold text-[#2c3e50]">
           Informations du tuteur
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <input
             type="text"
-            name="tuteurPrenom"
+            name="tuteur_telephone"
             placeholder="Prénom du tuteur"
-            value={form.tuteurPrenom}
+            value={form.tuteur_telephone}
             onChange={handleChange}
             className="border rounded-lg px-4 py-2 w-full"
           />
           <input
             type="text"
-            name="tuteurNom"
+            name="tuteur_nom"
             placeholder="Nom du tuteur"
-            value={form.tuteurNom}
+            value={form.tuteur_nom}
             onChange={handleChange}
             className="border rounded-lg px-4 py-2 w-full"
           />
           <input
             type="tel"
-            name="tuteurTelephone"
+            name="tuteur_prenom"
             placeholder="Téléphone du tuteur"
-            value={form.tuteurTelephone}
+            value={form.tuteur_prenom}
             onChange={handleChange}
             className="border rounded-lg px-4 py-2 w-full"
           />
+          <input
+            type="checkbox"
+            name="phs"
+            checked={form.phs}
+            onChange={(e) => setForm({ ...form, phs: e.target.checked })}
+            className="w-4 h-4"
+          />
+          <label className="text-gray-700">
+            Je suis une personne en situation de handicap
+          </label>
         </div>
 
         {/* Filière & Niveau */}
@@ -131,10 +170,11 @@ export default function FormPostule() {
             required
           >
             <option value="">-- Sélectionnez une filière --</option>
-            <option value="Hotellerie">Hôtellerie</option>
-            <option value="Electro-mecanique">Électro-mécanique</option>
-            <option value="BTP">BTP</option>
-            <option value="Sante">Santé</option>
+            {filieres.map((f) => (
+              <option key={f.id} value={f.id}>
+                {f.nom}
+              </option>
+            ))}
           </select>
 
           <select
@@ -145,12 +185,11 @@ export default function FormPostule() {
             required
           >
             <option value="">-- Sélectionnez un niveau --</option>
-            <option value="CPI">CPI</option>
-            <option value="CAP">CAP</option>
-            <option value="BT">BT</option>
-            <option value="BTS">BTS</option>
-            <option value="Licence">Licence</option>
-            <option value="Master">Master</option>
+            {niveaux.map((n) => (
+              <option key={n.id} value={n.id}>
+                {n.nom}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -167,13 +206,12 @@ export default function FormPostule() {
           required
         />
 
-        {/* Bouton */}
         <div className="text-center">
           <button
             type="submit"
             className="bg-yellow-400 text-[#2c3e50] font-semibold px-6 py-3 rounded-lg shadow hover:bg-yellow-500 transition"
           >
-            Envoyer la candidature
+            {isSubmitting ? "Envoi..." : "Envoyer la candidature"}
           </button>
         </div>
       </form>

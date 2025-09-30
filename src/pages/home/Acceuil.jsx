@@ -1,45 +1,17 @@
 import React from "react";
 import { Building2, School, BarChart3, Upload } from "lucide-react";
 import { Link } from "react-router-dom";
-
-// Données dynamiques
-const stats = [
-  { value: "08", label: "Entreprises gérées", href: "/les-etablissements" },
-  { value: "16", label: "Établissements", href: "/les-etablissements" },
-];
-
-const features = [
-  {
-    icon: <Building2 className="w-10 h-10 text-yellow-500 mb-4" />,
-    title: "Gestion des entreprises",
-    desc: "Centralisez toutes vos données d'entreprise.",
-  },
-  {
-    icon: <School className="w-10 h-10 text-yellow-500 mb-4" />,
-    title: "Gestion des écoles",
-    desc: "Administrez vos écoles et vos étudiants facilement.",
-  },
-  {
-    icon: <BarChart3 className="w-10 h-10 text-yellow-500 mb-4" />,
-    title: "Rapports & Analyses",
-    desc: "Suivez vos performances avec des statistiques claires.",
-  },
-  {
-    icon: <Upload className="w-10 h-10 text-yellow-500 mb-4" />,
-    title: "Import de données",
-    desc: "Importez vos fichiers Excel ou CSV en quelques clics.",
-  },
-];
+import { useGetListeEtablissementsQuery } from "../../backend/features/etablissement/etablisAPI";
 
 // Hero
 function Hero() {
   return (
     <section className="bg-[#2c3e50] text-white py-20 text-center">
-      <h1 className="text-4xl md:text-4xl font-bold mb-2">
+      <h1 className="text-4xl md:text-5xl font-bold mb-4">
         Bienvenue sur la plateforme des{" "}
         <span className="text-yellow-400">CFPT</span> de Thiés
       </h1>
-      <div className="flex justify-center items-center text-3xl mb-2 flex-wrap gap-2">
+      <div className="flex justify-center items-center text-3xl mb-4 flex-wrap gap-2">
         <p>
           <strong className="text-yellow-400">C</strong>enter de
         </p>
@@ -70,7 +42,7 @@ function Hero() {
 }
 
 // Stats
-function Stats() {
+function Stats({ stats }) {
   return (
     <section className="py-16 bg-gray-100">
       <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 text-center">
@@ -90,6 +62,29 @@ function Stats() {
 
 // Features
 function Features() {
+  const features = [
+    {
+      icon: <Building2 className="w-10 h-10 text-yellow-500 mb-4" />,
+      title: "Gestion des entreprises",
+      desc: "Centralisez toutes vos données d'entreprise.",
+    },
+    {
+      icon: <School className="w-10 h-10 text-yellow-500 mb-4" />,
+      title: "Gestion des écoles",
+      desc: "Administrez vos écoles et vos étudiants facilement.",
+    },
+    {
+      icon: <BarChart3 className="w-10 h-10 text-yellow-500 mb-4" />,
+      title: "Rapports & Analyses",
+      desc: "Suivez vos performances avec des statistiques claires.",
+    },
+    {
+      icon: <Upload className="w-10 h-10 text-yellow-500 mb-4" />,
+      title: "Import de données",
+      desc: "Importez vos fichiers Excel ou CSV en quelques clics.",
+    },
+  ];
+
   return (
     <section className="py-16">
       <h2 className="text-3xl font-bold text-center text-[#2c3e50] mb-12">
@@ -152,11 +147,32 @@ function Footer() {
   );
 }
 
+// Page Acceuil
 export default function Acceuil() {
+  const { data, isLoading } = useGetListeEtablissementsQuery();
+  const etablissements = data?.results || [];
+
+  const stats = [
+    { value: "08", label: "Entreprises gérées", href: "/les-etablissements" },
+    {
+      value: data?.count || 0,
+      label: "Établissements",
+      href: "/les-etablissements",
+    },
+  ];
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen text-gray-700 text-xl">
+        Chargement des données...
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col min-h-screen">
       <Hero />
-      <Stats />
+      <Stats stats={stats} />
       <Features />
       <CTA />
       <Footer />

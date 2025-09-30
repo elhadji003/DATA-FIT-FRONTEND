@@ -11,13 +11,18 @@ import {
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import Loader from "./Loader";
+import Notifications from "./Notifications";
+import { useGetEtablisProfileQuery } from "../../backend/features/etablissement/etablisAPI";
 
 export default function Header() {
   const user = useSelector((state) => state.auth.user);
+  const { data: profileEtablissement } = useGetEtablisProfileQuery();
+
   const [isOpen, setIsOpen] = useState(false);
 
   if (!user) {
-    return <p>Chargement du profil...</p>;
+    return <Loader />;
   }
 
   const iconClass =
@@ -41,7 +46,7 @@ export default function Header() {
           )}
 
           <div className="flex flex-col">
-            <p className="font-semibold">{user.full_name || user.email}</p>
+            <p className="font-semibold">{profileEtablissement?.nom_etablissement}</p>
             <p className="text-sm mb-1">Email: {user.email}</p>
             <Link to={`mon-profile`} className="hidden sm:inline-block">
               <Edit size={20} />
@@ -52,19 +57,18 @@ export default function Header() {
         {/* Right: Icons */}
         <div className="hidden md:flex items-center gap-4">
           <span className={iconClass}>
-            <BellIcon />
+            <Notifications etabId={profileEtablissement?.id} />
+          </span>
+          <span>|</span>
+          <span className={iconClass}>
+            <Link to={"listeEtudiants"}>
+              <User2 />
+            </Link>
           </span>
           <span className={iconClass}>
-            <Mail />
-          </span>
-          <span className={iconClass}>
-            <Archive />
-          </span>
-          <span className={iconClass}>
-            <User2 />
-          </span>
-          <span className={iconClass}>
-            <Users2 />
+            <Link to={"listePersonnels"}>
+              <Users2 />
+            </Link>
           </span>
         </div>
 
@@ -87,14 +91,9 @@ export default function Header() {
           </Link>
           <div className="flex gap-2">
             <span className={iconClass}>
-              <BellIcon />
+              <Notifications etabId={user.id} />
             </span>
-            <span className={iconClass}>
-              <Mail />
-            </span>
-            <span className={iconClass}>
-              <Archive />
-            </span>
+            <span>|</span>
             <span className={iconClass}>
               <User2 />
             </span>

@@ -3,6 +3,8 @@ import AjouterFilieresNiveaux from "../pages/etablissement/AjouterFilieresNiveau
 import Candidature from "../pages/etablissement/Candidature";
 import DashboardEtablis from "../pages/etablissement/DashboardEtablis";
 import ImporterFichier from "../pages/etablissement/ImporterFichier";
+import ListeEtudiants from "../pages/etablissement/ListeEtudiants";
+import ListePersonnels from "../pages/etablissement/ListePersonnels";
 import MonProfile from "../pages/etablissement/MonProfile";
 
 export const privateRoutes = [
@@ -12,4 +14,6 @@ export const privateRoutes = [
   { path: "/importerFichier", element: <ImporterFichier /> },
   { path: "/mon-profile", element: <MonProfile /> },
   { path: "/crud/fileres/niveaux", element: <AjouterFilieresNiveaux /> },
+  { path: "/listeEtudiants", element: <ListeEtudiants /> },
+  { path: "/listePersonnels", element: <ListePersonnels /> },
 ];

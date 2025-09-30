@@ -1,9 +1,12 @@
-import React from "react";
+// MonProfile.jsx
+import React, { useState } from "react";
 import { useGetEtablisProfileQuery } from "../../backend/features/etablissement/etablisAPI";
 import ChangePasswordForm from "../../components/auth/ChangePasswordForm";
+import ModalEditEtablissement from "../../components/etablissement/ModalEditEtablissement";
 
 export default function MonProfile() {
   const { data: profile } = useGetEtablisProfileQuery();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const isEtablissement = profile?.role === "etablissement";
 
@@ -29,7 +32,14 @@ export default function MonProfile() {
           <p className="bg-white px-2 py-2 rounded-md">
             <span>Filières : </span>
             <span className="font-bold">
-              {profile?.filieres?.join(", ") || "Aucune"}
+              {profile?.filieres?.map((f) => f.nom).join(", ") || "Aucune"}
+            </span>
+          </p>
+
+          <p className="bg-white px-2 py-2 rounded-md">
+            <span>Niveaux : </span>
+            <span className="font-bold">
+              {profile?.niveaux?.map((n) => n.nom).join(", ") || "Aucun"}
             </span>
           </p>
 
@@ -57,13 +67,13 @@ export default function MonProfile() {
               <p className="bg-white px-2 py-2 rounded-md">
                 <span>Filières : </span>
                 <span className="font-bold">
-                  {profile.filieres?.join(", ") || "Aucune"}
+                  {profile.filieres?.map((f) => f.nom).join(", ") || "Aucune"}
                 </span>
               </p>
               <p className="bg-white px-2 py-2 rounded-md">
                 <span>Niveaux : </span>
                 <span className="font-bold">
-                  {profile.niveaux?.join(", ") || "Aucun"}
+                  {profile.niveaux?.map((n) => n.nom).join(", ") || "Aucun"}
                 </span>
               </p>
               {profile.logo && (
@@ -81,7 +91,10 @@ export default function MonProfile() {
         </div>
 
         <div className="flex gap-3 mt-4">
-          <button className="bg-gray-800 px-4 py-2 rounded-md text-white">
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="bg-gray-700 px-4 py-2 rounded-md text-white cursor-pointer hover:bg-gray-800"
+          >
             Modifier
           </button>
           <button className="bg-red-500 px-4 py-2 rounded-md text-white">
@@ -96,6 +109,10 @@ export default function MonProfile() {
         </h1>
         <ChangePasswordForm />
       </div>
+
+      {isModalOpen && (
+        <ModalEditEtablissement onClose={() => setIsModalOpen(false)} />
+      )}
     </div>
   );
 }
