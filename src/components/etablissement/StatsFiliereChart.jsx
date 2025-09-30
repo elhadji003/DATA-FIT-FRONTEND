@@ -16,7 +16,7 @@ export default function StatsFiliereChart() {
   if (isLoading) return <Loader />;
   if (error) return <p>Erreur lors du chargement des stats</p>;
 
-  const chartData = data.map((item) => ({
+  const chartData = data?.results.map((item) => ({
     filiere: item.filiere__nom,
     total: item.total,
   }));

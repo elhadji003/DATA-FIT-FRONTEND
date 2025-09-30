@@ -10,10 +10,19 @@ export const etablisApi = createApi({
     getEtablisProfile: builder.query({
       query: () => ({
         url: `${USER_API}profile/etablissement/`,
-        method: "GET",
       }),
-      providesTags: ["Etablissements"], // ✅ ajoute un tag
+      providesTags: ["Etablissements"]
     }),
+
+    updateEtablisrProfile: builder.mutation({
+      query: ({ data }) => ({
+        url: `${USER_API}profile/etablissement/`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["Etablissements"],
+    }),
+
 
     getEtablisDetail: builder.query({
       query: (id) => ({
@@ -21,18 +30,6 @@ export const etablisApi = createApi({
         method: "GET",
       }),
       providesTags: (result, error, id) => [{ type: "Etablissements", id }],
-    }),
-
-    updateEtablisrProfile: builder.mutation({
-      query: ({ id, ...data }) => ({
-        url: `${USER_API}etablissements/${id}/update/`,
-        method: "PATCH",
-        body: data,
-      }),
-      invalidatesTags: (result, error, { id }) => [
-        { type: "Etablissements", id },
-        "Etablissements",
-      ],
     }),
 
     getListeEtablissements: builder.query({

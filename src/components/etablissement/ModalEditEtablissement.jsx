@@ -14,18 +14,18 @@ export default function ModalEditEtablissement({ onClose }) {
   const [formData, setFormData] = useState({
     nom_etablissement: "",
     departement: "",
-    filieres_ids: [],
-    niveaux_ids: [],
+    logo: null, // un vrai fichier
+    logoPreview: "", // juste pour l’aperçu
   });
 
   useEffect(() => {
     if (profile) {
-      setFormData({
+      setFormData((prev) => ({
+        ...prev,
         nom_etablissement: profile.nom_etablissement || "",
         departement: profile.departement || "",
-        filieres_ids: profile.filieres?.map((f) => f.id) || [],
-        niveaux_ids: profile.niveaux?.map((n) => n.id) || [],
-      });
+        logoPreview: profile.logo || "",
+      }));
     }
   }, [profile]);
 
@@ -36,16 +36,32 @@ export default function ModalEditEtablissement({ onClose }) {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleMultiSelectChange = (name, values) => {
-    setFormData((prev) => ({ ...prev, [name]: values }));
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData((prev) => ({
+        ...prev,
+        logo: file,
+        logoPreview: URL.createObjectURL(file),
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const fd = new FormData();
+    fd.append("nom_etablissement", formData.nom_etablissement);
+    fd.append("departement", formData.departement);
+
+    if (formData.logo instanceof File) {
+      fd.append("logo", formData.logo); // vrai fichier
+    }
+
     try {
-      await updateEtablissement({ id: profile.id, ...formData }).unwrap();
+      await updateEtablissement({ data: fd }).unwrap();
       toast.success("Profil mis à jour ✅");
-      onClose(); // ferme le modal après succès
+      onClose();
     } catch (err) {
       console.error(err);
       toast.error("Erreur lors de la mise à jour ❌");
@@ -80,49 +96,20 @@ export default function ModalEditEtablissement({ onClose }) {
           </div>
 
           <div>
-            <label className="block mb-1">Filières</label>
-            <select
-              multiple
-              value={formData.filieres_ids}
-              onChange={(e) =>
-                handleMultiSelectChange(
-                  "filieres_ids",
-                  Array.from(e.target.selectedOptions, (opt) =>
-                    parseInt(opt.value)
-                  )
-                )
-              }
+            <label className="block mb-1">Logo</label>
+            {formData.logoPreview && (
+              <img
+                src={formData.logoPreview}
+                alt="Logo actuel"
+                className="h-24 w-24 object-cover rounded-full mb-2 border"
+              />
+            )}
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
               className="w-full border rounded px-2 py-1"
-            >
-              {profile.filieres?.map((f) => (
-                <option key={f.id} value={f.id}>
-                  {f.nom}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block mb-1">Niveaux</label>
-            <select
-              multiple
-              value={formData.niveaux_ids}
-              onChange={(e) =>
-                handleMultiSelectChange(
-                  "niveaux_ids",
-                  Array.from(e.target.selectedOptions, (opt) =>
-                    parseInt(opt.value)
-                  )
-                )
-              }
-              className="w-full border rounded px-2 py-1"
-            >
-              {profile.niveaux?.map((n) => (
-                <option key={n.id} value={n.id}>
-                  {n.nom}
-                </option>
-              ))}
-            </select>
+            />
           </div>
 
           <div className="flex justify-end gap-2">

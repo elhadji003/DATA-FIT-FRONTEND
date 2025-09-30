@@ -13,9 +13,9 @@ export const authApi = createApi({
                 body: credentials,
             }),
         }),
-        register: builder.mutation({
+        registerUser: builder.mutation({
             query: (formData) => ({
-                url: `${AUTH_API}register/`,
+                url: `${AUTH_API}etudiants/`,
                 method: "POST",
                 body: formData,
             }),
@@ -80,7 +80,7 @@ export const authApi = createApi({
 
 export const {
     useLoginMutation,
-    useRegisterMutation,
+    useRegisterUserMutation,
     useRegisterEtablisMutation,
     useLogoutMutation,
     useChangePasswordMutation,

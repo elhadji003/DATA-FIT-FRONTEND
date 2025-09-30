@@ -8,8 +8,6 @@ export default function MonProfile() {
   const { data: profile } = useGetEtablisProfileQuery();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const isEtablissement = profile?.role === "etablissement";
-
   return (
     <div className="flex max-sm:flex-col gap-4">
       <div className="w-6/12 max-sm:w-full bg-gray-100 shadow-md rounded-md px-4 py-2 border-t-8 border-gray-800">
@@ -29,20 +27,6 @@ export default function MonProfile() {
             </p>
           )}
 
-          <p className="bg-white px-2 py-2 rounded-md">
-            <span>Filières : </span>
-            <span className="font-bold">
-              {profile?.filieres?.map((f) => f.nom).join(", ") || "Aucune"}
-            </span>
-          </p>
-
-          <p className="bg-white px-2 py-2 rounded-md">
-            <span>Niveaux : </span>
-            <span className="font-bold">
-              {profile?.niveaux?.map((n) => n.nom).join(", ") || "Aucun"}
-            </span>
-          </p>
-
           {profile?.phone && (
             <p className="bg-white px-2 py-2 rounded-md">
               <span>Téléphone : </span>
@@ -50,43 +34,11 @@ export default function MonProfile() {
             </p>
           )}
 
-          {isEtablissement && (
-            <>
-              <p className="bg-white px-2 py-2 rounded-md">
-                <span>Nom Etablissement : </span>
-                <span className="font-bold">
-                  {profile.nom_etablissement || "Non Défini"}
-                </span>
-              </p>
-              <p className="bg-white px-2 py-2 rounded-md">
-                <span>Département : </span>
-                <span className="font-bold">
-                  {profile.departement || "Non Défini"}
-                </span>
-              </p>
-              <p className="bg-white px-2 py-2 rounded-md">
-                <span>Filières : </span>
-                <span className="font-bold">
-                  {profile.filieres?.map((f) => f.nom).join(", ") || "Aucune"}
-                </span>
-              </p>
-              <p className="bg-white px-2 py-2 rounded-md">
-                <span>Niveaux : </span>
-                <span className="font-bold">
-                  {profile.niveaux?.map((n) => n.nom).join(", ") || "Aucun"}
-                </span>
-              </p>
-              {profile.logo && (
-                <div className="mt-2">
-                  <span>Logo : </span>
-                  <img
-                    src={profile.logo}
-                    alt="Logo Etablissement"
-                    className="h-16 w-16 object-cover rounded-md border"
-                  />
-                </div>
-              )}
-            </>
+          {profile?.email && (
+            <p className="bg-white px-2 py-2 rounded-md">
+              <span>Address Email : </span>
+              <span className="font-bold">{profile.email}</span>
+            </p>
           )}
         </div>
 

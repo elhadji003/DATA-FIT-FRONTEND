@@ -1,13 +1,15 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useGetEtablisDetailQuery } from "../../backend/features/etablissement/etablisAPI";
 import Loader from "../../components/global/Loader";
 import { usePostulerMutation } from "../../backend/features/postuler/postulerAPI";
 import toast from "react-hot-toast";
+import { ChevronLeft } from "lucide-react";
 
 export default function FormPostule() {
   const { id } = useParams(); // id établissement
   const { data, isLoading, isError } = useGetEtablisDetailQuery(id);
+  const navigate = useNavigate();
 
   const [postuler, { isLoading: isSubmitting }] = usePostulerMutation();
 
@@ -62,6 +64,13 @@ export default function FormPostule() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-10 px-4">
+      <button
+        onClick={() => navigate(-1)}
+        className="mx-4 flex items-center gap-2 mb-4 bg-gray-300 px-4 py-2 rounded-md cursor-pointer"
+      >
+        <ChevronLeft />
+        Retour
+      </button>
       <div className="max-w-3xl mx-auto text-center mb-10">
         <h1 className="text-3xl font-bold text-[#2c3e50]">
           Postuler à l’établissement {data.nom_etablissement}

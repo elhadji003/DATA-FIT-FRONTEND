@@ -5,18 +5,18 @@ import {
   useGetNiveauxQuery,
 } from "../../backend/features/programmes/programmesAPI";
 import StatsFiliereChart from "../../components/etablissement/StatsFiliereChart";
+import { useGetListesEtudiantByEtablisQuery } from "../../backend/features/user/userAPI";
 
 export default function DashboardEtablis() {
   const { data: filieres = [], isLoading: loadingFilieres } =
     useGetFilieresQuery();
   const { data: niveaux = [], isLoading: loadingNiveaux } =
     useGetNiveauxQuery();
+  const {
+    data: etudiants,
+    isLoading: loadingEtudiant,
+  } = useGetListesEtudiantByEtablisQuery();
 
-  // TODO: remplacer par tes vraies queries quand dispo
-  const { data: etudiants = [], isLoading: loadingEtudiants } = {
-    data: [],
-    isLoading: false,
-  };
   const { data: personnels = [], isLoading: loadingPersonnels } = {
     data: [],
     isLoading: false,
@@ -25,7 +25,7 @@ export default function DashboardEtablis() {
   const stats = [
     {
       title: "Étudiants",
-      value: etudiants.count || "0",
+      value: etudiants?.count || "0",
       icon: <GraduationCap className="w-8 h-8 text-blue-600" />,
       color: "bg-blue-100",
     },
@@ -70,7 +70,7 @@ export default function DashboardEtablis() {
           </div>
         ))}
       </div>
-      <StatsFiliereChart/>
+      <StatsFiliereChart />
     </div>
   );
 }

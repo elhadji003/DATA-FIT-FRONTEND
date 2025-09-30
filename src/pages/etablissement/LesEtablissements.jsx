@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useGetListeEtablissementsQuery } from "../../backend/features/etablissement/etablisAPI";
 import Loader from "../../components/global/Loader";
+import { ChevronLeft } from "lucide-react";
 
 export default function LesEtablissements() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const navigate = useNavigate();
 
   const { data, isLoading } = useGetListeEtablissementsQuery(page);
 
@@ -23,9 +25,17 @@ export default function LesEtablissements() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <h1 className="text-3xl font-bold text-center bg-[#2c3e50] text-white px-4 py-6 mb-10 uppercase shadow">
+      <h1 className="text-3xl font-bold text-center bg-[#2c3e50] text-white px-4 py-6 mb-4 uppercase shadow">
         Les établissements
       </h1>
+
+      <button
+        onClick={() => navigate(-1)}
+        className="mx-4 flex items-center gap-2 mb-4 bg-gray-300 px-4 py-2 rounded-md cursor-pointer"
+      >
+        <ChevronLeft />
+        Retour
+      </button>
 
       {/* Barre de recherche */}
       <div className="max-w-lg mx-auto mb-12">
@@ -46,24 +56,30 @@ export default function LesEtablissements() {
               key={etab.id}
               className="bg-white rounded-2xl shadow-md hover:shadow-xl transition transform hover:-translate-y-1 border-t-4 border-yellow-400 flex flex-col"
             >
-              {/* Logo ou placeholder */}
-              <div className="flex justify-center items-center bg-gray-100 h-40 rounded-t-2xl">
-                {etab.logo_url ? (
-                  <img
-                    src={etab.logo_url}
-                    alt={etab.nom_etablissement}
-                    className="h-24 w-24 object-cover rounded-full shadow-md border"
-                  />
-                ) : (
-                  <div className="h-24 w-24 flex items-center justify-center bg-gray-300 rounded-full text-gray-600 font-bold text-lg shadow-inner">
-                    {etab.nom_etablissement.charAt(0)}
+              {/* Header avec image de fond */}
+              <div className="relative w-full rounded-t-2xl overflow-hidden h-40">
+                <div
+                  className="h-full w-full bg-cover bg-center"
+                  style={{
+                    backgroundImage: `url(${
+                      etab.background_url || etab.logo || "/default-bg.jpg"
+                    })`,
+                  }}
+                />
+                {/* Overlay pour lisibilité */}
+                <div className="absolute inset-0 bg-black opacity-20"></div>
+
+                {/* Cercle avec initiales ou nom */}
+                <div className="absolute top-24 left-1/2 transform -translate-x-1/2 z-50">
+                  <div className="h-24 w-24 rounded-full bg-white flex items-center justify-center text-xl font-bold text-gray-800 shadow-lg border-4 border-white">
+                    {etab.nom_etablissement?.slice(0, 2).toUpperCase()}
                   </div>
-                )}
+                </div>
               </div>
 
-              {/* Infos */}
-              <div className="flex-1 p-6">
-                <h2 className="text-xl font-bold text-[#2c3e50] text-center mb-4">
+              {/* Infos principales */}
+              <div className="flex-1 p-6 mt-12">
+                <h2 className="text-xl font-bold text-center text-[#2c3e50] mb-4">
                   {etab.nom_etablissement}
                 </h2>
                 <p className="text-gray-600 mb-2">
@@ -80,7 +96,7 @@ export default function LesEtablissements() {
                 </p>
               </div>
 
-              {/* Bouton */}
+              {/* Bouton Postuler */}
               <div className="p-6 pt-0">
                 <Link
                   to={`/postuler/${etab.id}`}

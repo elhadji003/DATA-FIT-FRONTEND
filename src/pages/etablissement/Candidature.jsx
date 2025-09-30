@@ -1,15 +1,20 @@
 import React, { useState } from "react";
 import {
   useDeleteCandidatureMutation,
-  useGetCandidaturesQuery,
+  useGetCandidaturesParEtabQuery,
   useUpdateStatutMutation,
 } from "../../backend/features/postuler/postulerAPI";
 import Loader from "../../components/global/Loader";
 import ModalDetailCandidature from "../../components/etablissement/ModalDetailCandidature";
 import toast from "react-hot-toast";
+import { useGetEtablisProfileQuery } from "../../backend/features/etablissement/etablisAPI";
 
 export default function Candidatures() {
-  const { data, isLoading, isError } = useGetCandidaturesQuery();
+  const { data: etablissement } = useGetEtablisProfileQuery();
+  const { data, isLoading, isError } = useGetCandidaturesParEtabQuery(
+    etablissement?.id,
+    {skip: !etablissement?.id}
+  );
   const [updateStatut] = useUpdateStatutMutation();
   const [deleteCandidature] = useDeleteCandidatureMutation();
 
@@ -30,7 +35,6 @@ export default function Candidatures() {
       console.log("Erreur lors de la mise à jour :", err);
     }
   };
-
 
   const handleDelete = async (id) => {
     const confirmDelete = window.confirm(

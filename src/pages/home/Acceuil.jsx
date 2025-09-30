@@ -1,5 +1,12 @@
 import React from "react";
-import { Building2, School, BarChart3, Upload } from "lucide-react";
+import {
+  Building2,
+  Megaphone,
+  UserCheck,
+  School,
+  BarChart3,
+  Upload,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import { useGetListeEtablissementsQuery } from "../../backend/features/etablissement/etablisAPI";
 
@@ -26,17 +33,53 @@ function Hero() {
         </p>
       </div>
       <p className="text-lg max-w-2xl mx-auto mb-8">
-        L'application qui vous permet de gérer vos{" "}
-        <strong className="text-yellow-400">entreprises</strong> et vos{" "}
-        <strong className="text-yellow-400">écoles de formation</strong>{" "}
-        efficacement et simplement.
+        "La plateforme qui facilite la gestion des données et améliore la
+        visibilité des centres."
       </p>
       <Link
-        to="/login"
+        to="/register"
         className="px-6 py-3 bg-yellow-400 text-[#2c3e50] font-semibold rounded-lg shadow hover:bg-yellow-500 transition"
       >
-        Commencer maintenant
+        Créer un compte
       </Link>
+    </section>
+  );
+}
+
+// Sections principales (Centre, Annonces, Demande)
+function MainSections() {
+  const sections = [
+    {
+      icon: <Building2 className="w-10 h-10 text-yellow-500 mb-4" />,
+      title: "Centre de formation",
+      desc: "Découvrez tous les centres partenaires et leurs formations.",
+    },
+    {
+      icon: <Megaphone className="w-10 h-10 text-yellow-500 mb-4" />,
+      title: "Annonces",
+      desc: "Accédez aux annonces publiées par les centres.",
+    },
+    {
+      icon: <UserCheck className="w-10 h-10 text-yellow-500 mb-4" />,
+      title: "Demande d'inscription",
+      desc: "Postulez facilement aux formations qui vous intéressent.",
+    },
+  ];
+
+  return (
+    <section className="py-16 bg-gray-100">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 px-6 text-center">
+        {sections.map((s, i) => (
+          <div
+            key={i}
+            className="flex flex-col items-center bg-white p-8 rounded-xl shadow hover:shadow-lg transition"
+          >
+            {s.icon}
+            <h3 className="text-xl font-semibold mt-2">{s.title}</h3>
+            <p className="text-gray-600 text-center mt-2">{s.desc}</p>
+          </div>
+        ))}
+      </div>
     </section>
   );
 }
@@ -44,7 +87,7 @@ function Hero() {
 // Stats
 function Stats({ stats }) {
   return (
-    <section className="py-16 bg-gray-100">
+    <section className="py-16 bg-gray-50">
       <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 text-center">
         {stats.map((s, i) => (
           <div key={i} className="bg-white p-8 rounded-xl shadow">
@@ -63,11 +106,6 @@ function Stats({ stats }) {
 // Features
 function Features() {
   const features = [
-    {
-      icon: <Building2 className="w-10 h-10 text-yellow-500 mb-4" />,
-      title: "Gestion des entreprises",
-      desc: "Centralisez toutes vos données d'entreprise.",
-    },
     {
       icon: <School className="w-10 h-10 text-yellow-500 mb-4" />,
       title: "Gestion des écoles",
@@ -90,7 +128,7 @@ function Features() {
       <h2 className="text-3xl font-bold text-center text-[#2c3e50] mb-12">
         Fonctionnalités principales
       </h2>
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-6">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 px-6">
         {features.map((f, i) => (
           <div
             key={i}
@@ -147,7 +185,7 @@ function Footer() {
   );
 }
 
-// Page Acceuil
+// Page principale
 export default function Acceuil() {
   const { data, isLoading } = useGetListeEtablissementsQuery();
   const etablissements = data?.results || [];
@@ -172,6 +210,7 @@ export default function Acceuil() {
   return (
     <div className="flex flex-col min-h-screen">
       <Hero />
+      <MainSections />
       <Stats stats={stats} />
       <Features />
       <CTA />
